@@ -13,44 +13,36 @@ f2=None
 l_s=None
 iter=None
 b=None
-
+data = pd.read_csv("penguins.csv")
+# null bit7wel to male initially
+gender = {'male': 1, 'female': 0, np.nan: np.random.randint(0, 2)}  # 2 is execluded
+data['gender'] = data['gender'].map(gender)
+data = np.array(data)
+# check box of class [1,2,3], check box of class2[1,2,3]
 def w():
-    data = pd.read_csv("penguins.csv")
-    # null bit7wel to male initially
-    gender = {'male': 1, 'female': 0, np.nan:np.random.randint(0,2) } #2 is execluded
-    data['gender'] = data['gender'].map(gender)
-    data= np.array(data)
-    # check box of class [1,2,3], check box of class2[1,2,3]
+
     X_befor = np.zeros((150, 2), dtype=float)
     Y = np.zeros((50, 1), dtype=int)
     if(f1.get()=='bill_length_mm'):
        X_befor[:,0:1]=X_befor[:,0:1]+data[:,1:2]
-       X_befor[:, 0:1] = (X_befor[:, 0:1] - np.min(X_befor[:, 0:1])) / (np.max(X_befor[:, 0:1]) - np.min(X_befor[:, 0:1]))
     elif(f1.get()=='bill_depth_mm'):
        X_befor[:,0:1]=X_befor[:,0:1]+data[:, 2:3]
-       X_befor[:, 0:1] = (X_befor[:, 0:1] - np.min(X_befor[:, 0:1])) / (np.max(X_befor[:, 0:1]) - np.min(X_befor[:, 0:1]))
     elif(f1.get()=='flipper_length_mm'):
        X_befor[:,0:1]=X_befor[:,0:1]+data[:, 3:4]
-       X_befor[:, 0:1] = (X_befor[:, 0:1] - np.min(X_befor[:, 0:1])) / (np.max(X_befor[:, 0:1]) - np.min(X_befor[:, 0:1]))
     elif(f1.get()=='gender'):
         X_befor[:,0:1] = X_befor[:, 0:1] + data[:, 4:5]
     elif(f1.get()=='body_mass_g'):
         X_befor[:,0:1] = X_befor[:, 0:1] + data[:, 5:]
-        X_befor[:, 0:1] = (X_befor[:, 0:1] - np.min(X_befor[:, 0:1])) / (np.max(X_befor[:, 0:1]) - np.min(X_befor[:, 0:1]))
     if(f2.get()=='bill_length_mm'):
        X_befor[:,1:2]=X_befor[:,1:2]+data[:,1:2]
-       X_befor[:, 1:2] = (X_befor[:, 1:2] - np.min(X_befor[:, 1:2])) / (np.max(X_befor[:, 1:2]) - np.min(X_befor[:, 1:2]))
     elif(f2.get()=='bill_depth_mm'):
        X_befor[:,1:2]=X_befor[:,1:2]+data[:, 2:3]
-       X_befor[:, 1:2] = (X_befor[:, 1:2] - np.min(X_befor[:, 1:2])) / (np.max(X_befor[:, 1:2]) - np.min(X_befor[:, 1:2]))
     elif(f2.get()=='flipper_length_mm'):
        X_befor[:,1:2]=X_befor[:,1:2]+data[:, 3:4]
-       X_befor[:, 1:2] = (X_befor[:, 1:2] - np.min(X_befor[:, 1:2])) / (np.max(X_befor[:, 1:2]) - np.min(X_befor[:, 1:2]))
     elif(f2.get()=='gender'):
         X_befor[:,1:2] = X_befor[:, 1:2] + data[:, 4:5]
     elif(f2.get()=='body_mass_g'):
         X_befor[:,1:2] = X_befor[:, 1:2] + data[:, 5:]
-        X_befor[:, 1:2] = (X_befor[:, 1:2] - np.min(X_befor[:, 1:2])) / (np.max(X_befor[:, 1:2]) - np.min(X_befor[:, 1:2]))
     X=np.zeros((100,2),dtype=float)
     if(c1.get()=='Adelie'):
        X[0:50,:]=X_befor[0:50,:]
@@ -130,7 +122,6 @@ def r():
          Error.grid(column=0,row=12, padx=10, pady=25)
      else:
          w()
-
 ttk.Label(window, text = "Select First Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 5, padx = 10, pady = 25)
 ttk.Label(window, text = "Select Second Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 6, padx = 10, pady = 25)
 # Combobox creation
@@ -171,5 +162,61 @@ LR.focus_set()
 echo = Entry(window, width=30,textvariable=iter)
 echo.grid(column = 1,row = 10, padx = 10, pady = 25)
 Run = Button(window,text="Run",command=r).grid(column = 1,row = 13, padx = 10, pady = 25)
+data[:, 1:2] = (data[:, 1:2] - np.min(data[:, 1:2])) / (np.max(data[:, 1:2]) - np.min(data[:, 1:2]))
+data[:, 2:3] = (data[:, 2:3] - np.min(data[:, 2:3])) / (np.max(data[:, 2:3]) - np.min(data[:, 2:3]))
+data[:, 3:4] = (data[:, 3:4] - np.min(data[:, 3:4])) / (np.max(data[:, 3:4]) - np.min(data[:, 3:4]))
+data[:, 5:] = (data[:, 5:] - np.min(data[:, 5:])) / (np.max(data[:, 5:]) - np.min(data[:, 5:]))
+
+figure, axis=plt.subplots(3,3,figsize=(15,25))
+axis[0,0].scatter(data[:50,1:2], data[:50,2:3],color='green')
+axis[0,0].scatter(data[50:100,1:2],data[50:100,2:3],color='red')
+axis[0,0].scatter(data[100:150,1:2],data[100:150,2:3],color='black')
+axis[0,0].set_title("bill_length_mm and bill_depth_mm")
+
+axis[1,0].scatter(data[:50,1:2], data[:50,3:4],color='green')
+axis[1,0].scatter(data[50:100,1:2],data[50:100,3:4],color='red')
+axis[1,0].scatter(data[100:150,1:2],data[100:150,3:4],color='black')
+axis[1,0].set_title("bill_length_mm and flipper_length_mm")
+axis[2,0].scatter(data[:50,1:2], data[:50,4:5],color='green')
+axis[2,0].scatter(data[50:100,1:2],data[50:100,4:5],color='red')
+axis[2,0].scatter(data[100:150,1:2],data[100:150,4:5],color='black')
+axis[2,0].set_title("bill_length_mm and gender")
+axis[0,2].scatter(data[:50,1:2], data[:50,5:],color='green')
+axis[0,2].scatter(data[50:100,1:2],data[50:100,5:],color='red')
+axis[0,2].scatter(data[100:150,1:2],data[100:150,5:],color='black')
+axis[0,2].set_title("bill_length_mm and body_mass_g")
+
+axis[0,1].scatter(data[:50,2:3], data[:50,3:4],color='green')
+axis[0,1].scatter(data[50:100,2:3],data[50:100,3:4],color='red')
+axis[0,1].scatter(data[100:150,2:3],data[100:150,3:4],color='black')
+axis[0,1].set_title("bill_depth_mm and flipper_length_mm")
+
+axis[1,1].scatter(data[:50,2:3], data[:50,4:5],color='green')
+axis[1,1].scatter(data[50:100,2:3],data[50:100,4:5],color='red')
+axis[1,1].scatter(data[100:150,2:3],data[100:150,4:5],color='black')
+axis[1,1].set_title("bill_depth_mm and gender")
+
+axis[2,1].scatter(data[:50,2:3], data[:50,4:5],color='green')
+axis[2,1].scatter(data[50:100,2:3],data[50:100,4:5],color='red')
+axis[2,1].scatter(data[100:150,2:3],data[100:150,4:5],color='black')
+axis[2,1].set_title("bill_depth_mm and gender")
+
+axis[1,2].scatter(data[:50,3:4], data[:50,4:5],color='green')
+axis[1,2].scatter(data[50:100,3:4],data[50:100,4:5],color='red')
+axis[1,2].scatter(data[100:150,3:4],data[100:150,4:5],color='black')
+axis[1,2].set_title("flipper_length_mm and gender")
+
+axis[2,2].scatter(data[:50,3:4], data[:50,5:],color='green')
+axis[2,2].scatter(data[50:100,3:4],data[50:100,5:],color='red')
+axis[2,2].scatter(data[100:150,3:4],data[100:150,5:],color='black')
+axis[2,2].set_title("flipper_length_mm and body_mass_g")
+
+
+
+
+
+
+
+plt.show()
 
 window.mainloop()
