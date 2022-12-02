@@ -118,10 +118,6 @@ def run():
         Error.grid(column=0, row=12, padx=10, pady=25)
     else:
         implemet()
-
-
-
-
 firstClass=None
 secondClass=None
 firstFeature=None
@@ -129,17 +125,15 @@ secondFeature=None
 learningRate=None
 iteration=None
 bias=None
-
 data = pd.read_csv("penguins.csv")
 # null bit7wel to male initially
 gender = {'male': 1, 'female': 0, np.nan: np.random.randint(0, 2)}  # 2 is execluded
 data['gender'] = data['gender'].map(gender)
+listData=data.drop(['species'],axis=1).min().index
 data = np.array(data)
 data= featureScaling(data)
-
 figure, axis=plt.subplots(3,3,figsize=(15,25))
-
-listData=["bill_length_mm", "bill_depth_mm","flipper_length_mm","gender","body_mass_g"]
+#plotting relationships between Classes
 counterX=-1
 counterY=0
 for i in range(len(listData)):
@@ -158,13 +152,12 @@ for i in range(len(listData)):
 plt.show()
 
 # check box of class [1,2,3], check box of class2[1,2,3]
-
 window = tk.Tk()
 window.title('Class')
 window.geometry('500x700')
 
-ttk.Label(window, text = "Select First Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 5, padx = 10, pady = 25)
-ttk.Label(window, text = "Select Second Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 6, padx = 10, pady = 25)
+ttk.Label(window, text = "Select First Class :",font = ("", 10)).grid(column = 0,row = 5, padx = 10, pady = 25)
+ttk.Label(window, text = "Select Second Class :",font = ("", 10)).grid(column = 0,row = 6, padx = 10, pady = 25)
 # Combobox creation
 firstClass = tk.StringVar()
 secondClass=  tk.StringVar()
