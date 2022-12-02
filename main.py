@@ -6,20 +6,12 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 
-firstClass=None
-secondClass=None
-firstFeature=None
-secondFeature=None
-learningRate=None
-iteration=None
-bias=None
-
-data = pd.read_csv("penguins.csv")
-# null bit7wel to male initially
-gender = {'male': 1, 'female': 0, np.nan: np.random.randint(0, 2)}  # 2 is execluded
-data['gender'] = data['gender'].map(gender)
-data = np.array(data)
-# check box of class [1,2,3], check box of class2[1,2,3]
+def featureScaling(X):
+    for i in range(X.shape[1]):
+        if i==0:
+            continue;
+        X[:,i]=((X[:,i]-min(X[:,i]))/(max(X[:,i])-min(X[:,i])))
+    return X
 def implemet():
     X_Temp = np.zeros((150, 2), dtype=float)
     Y = np.zeros((50, 1), dtype=int)
@@ -118,15 +110,59 @@ def implemet():
     X_Temp=None
     X=None
     Y=None
+
+
+def run():
+    if firstClass.get() == secondClass.get() or firstFeature.get() == secondFeature.get() or learningRate.get() > 1.0:
+        Error = Label(window, text="ERROR")
+        Error.grid(column=0, row=12, padx=10, pady=25)
+    else:
+        implemet()
+
+
+
+
+firstClass=None
+secondClass=None
+firstFeature=None
+secondFeature=None
+learningRate=None
+iteration=None
+bias=None
+
+data = pd.read_csv("penguins.csv")
+# null bit7wel to male initially
+gender = {'male': 1, 'female': 0, np.nan: np.random.randint(0, 2)}  # 2 is execluded
+data['gender'] = data['gender'].map(gender)
+data = np.array(data)
+data= featureScaling(data)
+
+figure, axis=plt.subplots(3,3,figsize=(15,25))
+
+listData=["bill_length_mm", "bill_depth_mm","flipper_length_mm","gender","body_mass_g"]
+counterX=-1
+counterY=0
+for i in range(len(listData)):
+    for j in range(i+1,len(listData)):
+        if (counterX == 2 and counterY == 2):
+            break;
+        counterX+=1
+        if (counterX == 3):
+            counterY += 1
+            counterX = 0
+        axis[counterX, counterY].scatter(data[:50, i+1:i+2], data[:50, j+1:j+2], color='red')
+        axis[counterX, counterY].scatter(data[50:100, i+1:i+2], data[50:100, j+1:j+2], color='green')
+        axis[counterX, counterY].scatter(data[100:150, i+1:i+2], data[100:150, j+1:j+2], color='black')
+        str=listData[i]," and ", listData[j]
+        axis[counterX, counterY].set_title(str)
+plt.show()
+
+# check box of class [1,2,3], check box of class2[1,2,3]
+
 window = tk.Tk()
 window.title('Class')
 window.geometry('500x700')
-def run():
-     if firstClass.get() == secondClass.get() or firstFeature.get() == secondFeature.get() or learningRate.get()>1.0:
-         Error = Label(window,text="ERROR")
-         Error.grid(column=0,row=12, padx=10, pady=25)
-     else:
-         implemet()
+
 ttk.Label(window, text = "Select First Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 5, padx = 10, pady = 25)
 ttk.Label(window, text = "Select Second Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 6, padx = 10, pady = 25)
 # Combobox creation
@@ -167,61 +203,5 @@ LR.focus_set()
 echo = Entry(window, width=30,textvariable=iteration)
 echo.grid(column = 1,row = 10, padx = 10, pady = 25)
 Run = Button(window,text="Run",command=run).grid(column = 1,row = 13, padx = 10, pady = 25)
-data[:, 1:2] = (data[:, 1:2] - np.min(data[:, 1:2])) / (np.max(data[:, 1:2]) - np.min(data[:, 1:2]))
-data[:, 2:3] = (data[:, 2:3] - np.min(data[:, 2:3])) / (np.max(data[:, 2:3]) - np.min(data[:, 2:3]))
-data[:, 3:4] = (data[:, 3:4] - np.min(data[:, 3:4])) / (np.max(data[:, 3:4]) - np.min(data[:, 3:4]))
-data[:, 5:] = (data[:, 5:] - np.min(data[:, 5:])) / (np.max(data[:, 5:]) - np.min(data[:, 5:]))
-
-figure, axis=plt.subplots(3,3,figsize=(15,25))
-axis[0,0].scatter(data[:50,1:2], data[:50,2:3],color='green')
-axis[0,0].scatter(data[50:100,1:2],data[50:100,2:3],color='red')
-axis[0,0].scatter(data[100:150,1:2],data[100:150,2:3],color='black')
-axis[0,0].set_title("bill_length_mm and bill_depth_mm")
-
-axis[1,0].scatter(data[:50,1:2], data[:50,3:4],color='green')
-axis[1,0].scatter(data[50:100,1:2],data[50:100,3:4],color='red')
-axis[1,0].scatter(data[100:150,1:2],data[100:150,3:4],color='black')
-axis[1,0].set_title("bill_length_mm and flipper_length_mm")
-axis[2,0].scatter(data[:50,1:2], data[:50,4:5],color='green')
-axis[2,0].scatter(data[50:100,1:2],data[50:100,4:5],color='red')
-axis[2,0].scatter(data[100:150,1:2],data[100:150,4:5],color='black')
-axis[2,0].set_title("bill_length_mm and gender")
-axis[0,2].scatter(data[:50,1:2], data[:50,5:],color='green')
-axis[0,2].scatter(data[50:100,1:2],data[50:100,5:],color='red')
-axis[0,2].scatter(data[100:150,1:2],data[100:150,5:],color='black')
-axis[0,2].set_title("bill_length_mm and body_mass_g")
-
-axis[0,1].scatter(data[:50,2:3], data[:50,3:4],color='green')
-axis[0,1].scatter(data[50:100,2:3],data[50:100,3:4],color='red')
-axis[0,1].scatter(data[100:150,2:3],data[100:150,3:4],color='black')
-axis[0,1].set_title("bill_depth_mm and flipper_length_mm")
-
-axis[1,1].scatter(data[:50,2:3], data[:50,4:5],color='green')
-axis[1,1].scatter(data[50:100,2:3],data[50:100,4:5],color='red')
-axis[1,1].scatter(data[100:150,2:3],data[100:150,4:5],color='black')
-axis[1,1].set_title("bill_depth_mm and gender")
-
-axis[2,1].scatter(data[:50,2:3], data[:50,4:5],color='green')
-axis[2,1].scatter(data[50:100,2:3],data[50:100,4:5],color='red')
-axis[2,1].scatter(data[100:150,2:3],data[100:150,4:5],color='black')
-axis[2,1].set_title("bill_depth_mm and gender")
-
-axis[1,2].scatter(data[:50,3:4], data[:50,4:5],color='green')
-axis[1,2].scatter(data[50:100,3:4],data[50:100,4:5],color='red')
-axis[1,2].scatter(data[100:150,3:4],data[100:150,4:5],color='black')
-axis[1,2].set_title("flipper_length_mm and gender")
-
-axis[2,2].scatter(data[:50,3:4], data[:50,5:],color='green')
-axis[2,2].scatter(data[50:100,3:4],data[50:100,5:],color='red')
-axis[2,2].scatter(data[100:150,3:4],data[100:150,5:],color='black')
-axis[2,2].set_title("flipper_length_mm and body_mass_g")
-
-
-
-
-
-
-
-plt.show()
 
 window.mainloop()
