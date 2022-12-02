@@ -6,62 +6,69 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 
-c1=None
-c2=None
-f1=None
-f2=None
-l_s=None
-iter=None
-b=None
+firstClass=None
+secondClass=None
+firstFeature=None
+secondFeature=None
+learningRate=None
+iteration=None
+bias=None
+
 data = pd.read_csv("penguins.csv")
 # null bit7wel to male initially
 gender = {'male': 1, 'female': 0, np.nan: np.random.randint(0, 2)}  # 2 is execluded
 data['gender'] = data['gender'].map(gender)
 data = np.array(data)
 # check box of class [1,2,3], check box of class2[1,2,3]
-def w():
-
-    X_befor = np.zeros((150, 2), dtype=float)
+def implemet():
+    X_Temp = np.zeros((150, 2), dtype=float)
     Y = np.zeros((50, 1), dtype=int)
-    if(f1.get()=='bill_length_mm'):
-       X_befor[:,0:1]=X_befor[:,0:1]+data[:,1:2]
-    elif(f1.get()=='bill_depth_mm'):
-       X_befor[:,0:1]=X_befor[:,0:1]+data[:, 2:3]
-    elif(f1.get()=='flipper_length_mm'):
-       X_befor[:,0:1]=X_befor[:,0:1]+data[:, 3:4]
-    elif(f1.get()=='gender'):
-        X_befor[:,0:1] = X_befor[:, 0:1] + data[:, 4:5]
-    elif(f1.get()=='body_mass_g'):
-        X_befor[:,0:1] = X_befor[:, 0:1] + data[:, 5:]
-    if(f2.get()=='bill_length_mm'):
-       X_befor[:,1:2]=X_befor[:,1:2]+data[:,1:2]
-    elif(f2.get()=='bill_depth_mm'):
-       X_befor[:,1:2]=X_befor[:,1:2]+data[:, 2:3]
-    elif(f2.get()=='flipper_length_mm'):
-       X_befor[:,1:2]=X_befor[:,1:2]+data[:, 3:4]
-    elif(f2.get()=='gender'):
-        X_befor[:,1:2] = X_befor[:, 1:2] + data[:, 4:5]
-    elif(f2.get()=='body_mass_g'):
-        X_befor[:,1:2] = X_befor[:, 1:2] + data[:, 5:]
+    #get Features we need (columns)
+    #feature1
+    if(firstFeature.get()=='bill_length_mm'):
+       X_Temp[:,0:1]=X_Temp[:,0:1]+data[:,1:2]
+    elif(firstFeature.get()=='bill_depth_mm'):
+       X_Temp[:,0:1]=X_Temp[:,0:1]+data[:, 2:3]
+    elif(firstFeature.get()=='flipper_length_mm'):
+       X_Temp[:,0:1]=X_Temp[:,0:1]+data[:, 3:4]
+    elif(firstFeature.get()=='gender'):
+        X_Temp[:,0:1] = X_Temp[:, 0:1] + data[:, 4:5]
+    elif(firstFeature.get()=='body_mass_g'):
+        X_Temp[:,0:1] = X_Temp[:, 0:1] + data[:, 5:]
+
+    #feature2
+    if(secondFeature.get()=='bill_length_mm'):
+       X_Temp[:,1:2]=X_Temp[:,1:2]+data[:,1:2]
+    elif(secondFeature.get()=='bill_depth_mm'):
+       X_Temp[:,1:2]=X_Temp[:,1:2]+data[:, 2:3]
+    elif(secondFeature.get()=='flipper_length_mm'):
+       X_Temp[:,1:2]=X_Temp[:,1:2]+data[:, 3:4]
+    elif(secondFeature.get()=='gender'):
+        X_Temp[:,1:2] = X_Temp[:, 1:2] + data[:, 4:5]
+    elif(secondFeature.get()=='body_mass_g'):
+        X_Temp[:,1:2] = X_Temp[:, 1:2] + data[:, 5:]
     X=np.zeros((100,2),dtype=float)
-    if(c1.get()=='Adelie'):
-       X[0:50,:]=X_befor[0:50,:]
-    elif(c1.get()=='Gentoo'):
-       X[0:50,:]=X_befor[50:100,:]
-    elif(c1.get()=='Chinstrap'):
-       X[0:50,:]=X_befor[100:150, :]
-    if(c2.get()=='Adelie'):
-       X[50:100,:]+=X_befor[0:50,:]
-    elif(c2.get()=='Gentoo'):
-       X[50:100,:]+=X_befor[50:100,:]
-    elif(c2.get()=='Chinstrap'):
-       X[50:100,:]+=X_befor[100:150, :]
+    #get Classes we need (rows)
+    #class1
+    if(firstClass.get()=='Adelie'):
+       X[0:50,:]=X_Temp[0:50,:]
+    elif(firstClass.get()=='Gentoo'):
+       X[0:50,:]=X_Temp[50:100,:]
+    elif(firstClass.get()=='Chinstrap'):
+       X[0:50,:]=X_Temp[100:150, :]
+    #class2
+    if(secondClass.get()=='Adelie'):
+       X[50:100,:]+=X_Temp[0:50,:]
+    elif(secondClass.get()=='Gentoo'):
+       X[50:100,:]+=X_Temp[50:100,:]
+    elif(secondClass.get()=='Chinstrap'):
+       X[50:100,:]+=X_Temp[100:150, :]
     X=X.reshape(100, 2)
-    if b.get()==0: #mfii4
-        bia = np.zeros((100,))
-    elif b.get()==1:
-        bia = np.ones((100,))
-    X = np.insert(X, 0, bia, axis=1)
+    if bias.get()==0: #mfii4
+        biasColumn = np.zeros((100,))
+    elif bias.get()==1:
+        biasColumn = np.ones((100,))
+    X = np.insert(X, 0, biasColumn, axis=1)
     X = X.reshape(100, 3)
     #scalling for two features
     #the first 50 sample equal 0 and esle equal 1
@@ -69,66 +76,64 @@ def w():
     Y[Y==0]=-1
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.4, random_state=1)
     plt.scatter(X_train[:,1],X_train[:,2])
-    #a4t8alt b awl  2 features initially l7d ma n3ml al gui
+    #a4t8alt bias awl  2 features initially l7d ma n3ml al gui
     W=np.random.rand(2,1)
-    if b.get()==0:
+    if bias.get()==0:
      W=np.insert(W,0,0)
-    elif b.get()==1:
+    elif bias.get()==1:
      W=np.insert(W,0,1)
     W=W.reshape(3,1)
     #inputs
     #GUI
     c=0
-    for j in range(int(iter.get())):
+    for j in range(int(iteration.get())):
      for i in range(X_train.shape[0]):
-       Z = np.dot(X_train[i:i+1,:], W)
-       Z[Z >= 0] = 1
-       Z[Z < 0] = -1
-       e= Y_train[i:i+1]-Z[0:1,0:1]
-       W = W +  e * float(l_s.get()) * (X_train[i:i+1,:].T)
-    Z=np.dot(X_test[:,:3],W)
-    Z[Z >= 0] = 1
-    Z[Z < 0] = -1
-    cost=0
+       net = np.dot(X_train[i:i+1,:], W)
+       net[net >= 0] = 1
+       net[net < 0] = -1
+       error= Y_train[i:i+1]-net[0:1,0:1]
+       W = W +  error * float(learningRate.get()) * (X_train[i:i+1,:].T)
+    net=np.dot(X_test[:,:3],W)
+    net[net >= 0] = 1
+    net[net < 0] = -1
     for i in range(X_test.shape[0]):
-        if Y_test[i]-Z[i] == 0:
+        if Y_test[i]-net[i] == 0:
             c += 1
     accuracy=c/X_test.shape[0]*100
-    print("Class 1: ", c1.get())
-    print("Class 2: ", c2.get())
-    print("Feature 1: ", f1.get())
-    print("Feature 2: ", f2.get())
-    print("No of iterations: ",iter.get())
-    print("Learning rate: ",l_s.get())
-    if b.get()==1:
+    print("Class 1: ", firstClass.get())
+    print("Class 2: ", secondClass.get())
+    print("Feature 1: ", firstFeature.get())
+    print("Feature 2: ", secondFeature.get())
+    print("No of iterations: ",iteration.get())
+    print("Learning rate: ",learningRate.get())
+    if bias.get()==1:
         print("Bias is included.")
-    elif b.get()==0:
+    elif bias.get()==0:
         print("Bias is execluded.")
     print("Accuracy of the System: ",accuracy,"%\n")
     plot_x = np.array([min(X_train[:,0]) - 2, max(X_train[:,0]) + 2])
     plot_y = (-1/W[2]) * (W[1] * plot_x+W[0] )
     plt.plot(plot_x, plot_y, label = "Decision_Boundary")
     plt.show()
-    X_befor=None
+    X_Temp=None
     X=None
     Y=None
 window = tk.Tk()
 window.title('Class')
 window.geometry('500x700')
-def r():
-
-     if c1.get() == c2.get() or f1.get() == f2.get() or l_s.get()>1.0:
+def run():
+     if firstClass.get() == secondClass.get() or firstFeature.get() == secondFeature.get() or learningRate.get()>1.0:
          Error = Label(window,text="ERROR")
          Error.grid(column=0,row=12, padx=10, pady=25)
      else:
-         w()
+         implemet()
 ttk.Label(window, text = "Select First Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 5, padx = 10, pady = 25)
 ttk.Label(window, text = "Select Second Class :",font = ("Times New Roman", 10)).grid(column = 0,row = 6, padx = 10, pady = 25)
 # Combobox creation
-c1 = tk.StringVar()
-c2=  tk.StringVar()
-Class1 = ttk.Combobox(window, width = 27, textvariable = c1)
-Class2 = ttk.Combobox(window, width = 27, textvariable = c2)
+firstClass = tk.StringVar()
+secondClass=  tk.StringVar()
+Class1 = ttk.Combobox(window, width = 27, textvariable = firstClass)
+Class2 = ttk.Combobox(window, width = 27, textvariable = secondClass)
 # Adding combobox drop down list
 Class1['values'] = ('Adelie','Gentoo','Chinstrap',)
 Class2['values'] = ('Adelie','Gentoo','Chinstrap',)
@@ -136,10 +141,10 @@ Class1.grid(column = 1, row = 5)
 Class2.grid(column = 1, row = 6)
 Class1.current()
 Class2.current()
-f1= tk.StringVar()
-f2=tk.StringVar()
-feature1 = ttk.Combobox(window, width = 27, textvariable = f1)
-feature2 = ttk.Combobox(window, width = 27, textvariable = f2)
+firstFeature= tk.StringVar()
+secondFeature=tk.StringVar()
+feature1 = ttk.Combobox(window, width = 27, textvariable = firstFeature)
+feature2 = ttk.Combobox(window, width = 27, textvariable = secondFeature)
 # Adding combobox drop down list
 feature1['values'] = ('bill_length_mm','bill_depth_mm','flipper_length_mm','gender','body_mass_g')
 feature2['values'] = ('bill_length_mm','bill_depth_mm','flipper_length_mm','gender','body_mass_g')
@@ -151,17 +156,17 @@ feature1.current()
 feature2.current()
 Label1 = Label(window,text="Learning Rate").grid(column = 0,row = 9, padx = 10, pady = 25)
 Label2 = Label(window,text="echo").grid(column = 0,row = 10, padx = 10, pady = 25)
-l_s = tk.DoubleVar()
-iter=tk.IntVar()
-b = tk.IntVar()
-k= tk.Checkbutton(window, text='Bias',variable=b, onvalue=1, offvalue=0)
+learningRate = tk.DoubleVar()
+iteration=tk.IntVar()
+bias = tk.IntVar()
+k= tk.Checkbutton(window, text='Bias',variable=bias, onvalue=1, offvalue=0)
 k.grid(column = 1,row = 11, padx = 10, pady = 25)
-LR = Entry(window,width=30, textvariable = l_s)
+LR = Entry(window,width=30, textvariable = learningRate)
 LR.grid(column = 1,row = 9, padx = 10, pady = 25)
 LR.focus_set()
-echo = Entry(window, width=30,textvariable=iter)
+echo = Entry(window, width=30,textvariable=iteration)
 echo.grid(column = 1,row = 10, padx = 10, pady = 25)
-Run = Button(window,text="Run",command=r).grid(column = 1,row = 13, padx = 10, pady = 25)
+Run = Button(window,text="Run",command=run).grid(column = 1,row = 13, padx = 10, pady = 25)
 data[:, 1:2] = (data[:, 1:2] - np.min(data[:, 1:2])) / (np.max(data[:, 1:2]) - np.min(data[:, 1:2]))
 data[:, 2:3] = (data[:, 2:3] - np.min(data[:, 2:3])) / (np.max(data[:, 2:3]) - np.min(data[:, 2:3]))
 data[:, 3:4] = (data[:, 3:4] - np.min(data[:, 3:4])) / (np.max(data[:, 3:4]) - np.min(data[:, 3:4]))
